@@ -1,6 +1,6 @@
 {
   "name": "advanced-svelte-autocomplete",
-  "version": "0.1.0",
+  "version": "2.2.3-t-next.0.1",
   "description": "Autocomplete / Select / Typeahead component made with Svelte 3",
   "svelte": "src/SimpleAutocomplete.svelte",
   "module": "index.mjs",
