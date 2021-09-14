@@ -15,14 +15,14 @@ Autocomplete / Select / Typeahead component made with [Svelte](https://svelte.de
 ## Install
 
 ```bash
-npm i -D simple-svelte-autocomplete
+npm i -D advanced-svelte-autocomplete
 ```
 
 ## Usage
 Import the component and define items:
 
 ````javascript
-import AutoComplete from "simple-svelte-autocomplete";
+import AutoComplete from "advanced-svelte-autocomplete";
 
 const colors = ["White", "Red", "Yellow", "Green", "Blue", "Black"];
 let selectedColor;

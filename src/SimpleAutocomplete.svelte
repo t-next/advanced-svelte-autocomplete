@@ -150,6 +150,7 @@
   // HTML elements
   let input;
   let list;
+  let container;
 
   // UI state
   let opened = false;
@@ -157,6 +158,7 @@
   let highlightIndex = -1;
   export let text;
   let filteredTextLength = 0;
+  let yScrollPosition = 0;
 
   // view model
   let filteredListItems;
@@ -168,6 +170,9 @@
 
   // other state
   let inputDelayTimeout;
+
+
+  let bounds = {};
 
   // -- Reactivity --
   function onSelectedItemChanged() {
@@ -192,6 +197,11 @@
     opened && ((items && items.length > 0) || filteredTextLength > 0);
 
   $: clearable = showClear || ((lock || multiple) && selectedItem);
+
+  $: if (yScrollPosition && showList) {
+    let boundingClientRect = container.getBoundingClientRect();
+    bounds = boundingClientRect;
+  }
 
   // --- Functions ---
   function safeStringFunction(theFunction, argument) {
@@ -1022,7 +1032,7 @@
 
   .autocomplete-list {
     background: #fff;
-    position: relative;
+    position: fixed;
     width: 100%;
     overflow-y: auto;
     z-index: 99;
@@ -1130,6 +1140,7 @@
 </style>
 
 <div
+  bind:this={container}
   class="{className ? className : ''}
   {hideArrow || !items.length ? 'hide-arrow' : ''}
   {multiple ? 'is-multiple' : ''} autocomplete select is-fullwidth {uniqueId}"
@@ -1186,15 +1197,16 @@
     {/if}
   </div>
   <div
-    class="{dropdownClassName ? dropdownClassName : ''} autocomplete-list {showList ? '' : 'hidden'}
+    class="aaa {dropdownClassName ? dropdownClassName : ''} autocomplete-list {showList ? '' : 'hidden'}
     is-fullwidth"
+    style="left: {bounds.left}px; top: {bounds.top + bounds.height - 2}px ; width: {bounds.width}px"
     bind:this={list}>
     {#if filteredListItems && filteredListItems.length > 0}
       {#each filteredListItems as listItem, i}
         {#if listItem && (maxItemsToShowInList <= 0 || i < maxItemsToShowInList)}
           {#if listItem}
             <div
-              class="autocomplete-list-item {i === highlightIndex ? 'selected' : ''}"
+              class="bbb autocomplete-list-item {i === highlightIndex ? 'selected' : ''}"
               class:confirmed={isConfirmed(listItem.item)}
               on:click={() => onListItemClick(listItem)}
               on:pointerenter={() => {
@@ -1236,4 +1248,4 @@
   </div>
 </div>
 
-<svelte:window on:click={onDocumentClick} />
+<svelte:window on:click={onDocumentClick} bind:scrollY={yScrollPosition}/>

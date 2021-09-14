@@ -1,6 +1,6 @@
 {
-  "name": "simple-svelte-autocomplete",
-  "version": "2.2.3",
+  "name": "advanced-svelte-autocomplete",
+  "version": "0.1.0",
   "description": "Autocomplete / Select / Typeahead component made with Svelte 3",
   "svelte": "src/SimpleAutocomplete.svelte",
   "module": "index.mjs",
@@ -40,7 +40,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/pstanoev/simple-svelte-autocomplete"
+    "url": "git+https://github.com/t-next/advanced-svelte-autocomplete"
   },
   "keywords": [
     "svelte",
