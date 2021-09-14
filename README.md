@@ -1,4 +1,4 @@
-# Simple Svelte Autocomplete
+# Extended Simple Svelte Autocomplete with overlay as static dropdown list
 
 Autocomplete / Select / Typeahead component made with [Svelte](https://svelte.dev/)
 
