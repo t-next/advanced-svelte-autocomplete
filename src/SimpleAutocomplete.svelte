@@ -198,9 +198,8 @@
 
   $: clearable = showClear || ((lock || multiple) && selectedItem);
 
-  $: if (yScrollPosition && showList) {
-    let boundingClientRect = container.getBoundingClientRect();
-    bounds = boundingClientRect;
+  $: if (showList || (showList && yScrollPosition)) {
+    bounds = container && container.getBoundingClientRect();
   }
 
   // --- Functions ---
