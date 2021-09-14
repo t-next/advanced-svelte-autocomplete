@@ -159,6 +159,9 @@
   export let text;
   let filteredTextLength = 0;
   let yScrollPosition = 0;
+  let xScrollPosition = 0;
+  let windowWidth = 0;
+  let windowHeight = 0;
 
   // view model
   let filteredListItems;
@@ -198,8 +201,8 @@
 
   $: clearable = showClear || ((lock || multiple) && selectedItem);
 
-  $: if (showList || (showList && yScrollPosition)) {
-    bounds = container && container.getBoundingClientRect();
+  $: if ((showList || yScrollPosition || xScrollPosition || windowWidth || windowHeight) && container) {
+    bounds = container.getBoundingClientRect();
   }
 
   // --- Functions ---
@@ -1198,7 +1201,7 @@
   <div
     class="aaa {dropdownClassName ? dropdownClassName : ''} autocomplete-list {showList ? '' : 'hidden'}
     is-fullwidth"
-    style="left: {bounds.left}px; top: {bounds.top + bounds.height - 2}px ; width: {bounds.width}px"
+    style="left: {bounds.left}px; top: {bounds.top + bounds.height}px ; width: {bounds.width}px"
     bind:this={list}>
     {#if filteredListItems && filteredListItems.length > 0}
       {#each filteredListItems as listItem, i}
@@ -1247,4 +1250,8 @@
   </div>
 </div>
 
-<svelte:window on:click={onDocumentClick} bind:scrollY={yScrollPosition}/>
+<svelte:window on:click={onDocumentClick}
+               bind:scrollY={yScrollPosition}
+               bind:scrollX={xScrollPosition}
+               bind:outerWidth={windowWidth}
+               bind:outerHeight={windowHeight}/>
