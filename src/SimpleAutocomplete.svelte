@@ -1221,7 +1221,7 @@
     {/if}
   </div>
   <div
-    class="aaa {dropdownClassName ? dropdownClassName : ''} autocomplete-list {showList ? '' : 'hidden'}
+    class="{dropdownClassName ? dropdownClassName : ''} autocomplete-list {showList ? '' : 'hidden'}
     is-fullwidth"
     style="left: {bounds.left}px; top: {bounds.top + bounds.height}px ; width: {bounds.width}px"
     bind:this={list}>
@@ -1230,7 +1230,7 @@
         {#if listItem && (maxItemsToShowInList <= 0 || i < maxItemsToShowInList)}
           {#if listItem}
             <div
-              class="bbb autocomplete-list-item {i === highlightIndex ? 'selected' : ''}"
+              class="autocomplete-list-item {i === highlightIndex ? 'selected' : ''}"
               class:confirmed={isConfirmed(listItem.item)}
               on:click={() => onListItemClick(listItem)}
               on:pointerenter={() => {
