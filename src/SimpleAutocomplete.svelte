@@ -201,10 +201,6 @@
 
   $: clearable = showClear || ((lock || multiple) && selectedItem);
 
-  $: if ((showList || windowWidth || windowHeight) && container) {
-    bounds = container.getBoundingClientRect();
-  }
-
   // --- Functions ---
   function safeStringFunction(theFunction, argument) {
     if (typeof theFunction !== "function") {
@@ -976,12 +972,46 @@
   }
 
   const scrollAction = (node, isShowList) => {
-    const onScroll = (e) => {
-      bounds = container ? container.getBoundingClientRect() : {};
+    function iOS() {
+      return [
+            'iPad Simulator',
+            'iPhone Simulator',
+            'iPod Simulator',
+            'iPad',
+            'iPhone',
+            'iPod'
+          ].includes(navigator.platform)
+          // iPad on iOS 13 detection
+          || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
     }
 
-    const addScrollListener = () => window.addEventListener("scroll", onScroll, true);
-    const removeScrollListener = () => window.removeEventListener("scroll", onScroll, true);
+    const onScroll = (e) => {
+      const rect = container.getBoundingClientRect();
+      const viewport = window.visualViewport;
+      bounds = { top: rect.top + viewport.offsetTop, left: rect.left, height: rect.height, width: rect.width };
+      console.log(bounds)
+    }
+
+    const addScrollListener = () => {
+      onScroll();
+      if (iOS()) {
+        window.visualViewport.addEventListener("touchmove", onScroll, true);
+        window.visualViewport.addEventListener("scroll", onScroll, true)
+      } else {
+        window.addEventListener("scroll", onScroll, true);
+        window.addEventListener("resize", onScroll, true);
+      }
+    };
+    const removeScrollListener = () => {
+      onScroll();
+      if (iOS()) {
+        window.visualViewport.removeEventListener("touchmove", onScroll, true);
+        window.visualViewport.removeEventListener("resize", onScroll, true)
+      } else {
+        window.removeEventListener("scroll", onScroll, true);
+        window.removeEventListener("resize", onScroll, true);
+      }
+    };
 
     if (isShowList) {
       addScrollListener();
@@ -1273,6 +1303,7 @@
 </div>
 
 <svelte:window on:click={onDocumentClick}
+               on:touchstart={onDocumentClick}
                bind:outerWidth={windowWidth}
                bind:outerHeight={windowHeight}
                use:scrollAction={showList}/>
