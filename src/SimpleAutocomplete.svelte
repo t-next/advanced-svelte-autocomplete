@@ -985,16 +985,18 @@
           || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
     }
 
+    let isiOS = iOS();
+
     const onScroll = (e) => {
       const rect = container.getBoundingClientRect();
-      const viewport = window.visualViewport;
+      const viewport = isiOS ? window.visualViewport : {offsetTop: 0};
       bounds = { top: rect.top + viewport.offsetTop, left: rect.left, height: rect.height, width: rect.width };
       console.log(bounds)
     }
 
     const addScrollListener = () => {
       onScroll();
-      if (iOS()) {
+      if (isiOS) {
         window.visualViewport.addEventListener("touchmove", onScroll, true);
         window.visualViewport.addEventListener("scroll", onScroll, true)
       } else {
