@@ -201,7 +201,7 @@
 
   $: clearable = showClear || ((lock || multiple) && selectedItem);
 
-  $: if ((showList || yScrollPosition || xScrollPosition || windowWidth || windowHeight) && container) {
+  $: if ((showList || windowWidth || windowHeight) && container) {
     bounds = container.getBoundingClientRect();
   }
 
@@ -974,6 +974,28 @@
       return listItem == selectedItem;
     }
   }
+
+  const scrollAction = (node, isShowList) => {
+    const onScroll = (e) => {
+      bounds = container ? container.getBoundingClientRect() : {};
+    }
+
+    const addScrollListener = () => window.addEventListener("scroll", onScroll, true);
+    const removeScrollListener = () => window.removeEventListener("scroll", onScroll, true);
+
+    if (isShowList) {
+      addScrollListener();
+    }
+
+    return {
+      update(isShowList) {
+        !isShowList ? removeScrollListener() : addScrollListener();
+      },
+      destroy() {
+        removeScrollListener();
+      }
+    };
+  }
 </script>
 
 <style>
@@ -1251,7 +1273,6 @@
 </div>
 
 <svelte:window on:click={onDocumentClick}
-               bind:scrollY={yScrollPosition}
-               bind:scrollX={xScrollPosition}
                bind:outerWidth={windowWidth}
-               bind:outerHeight={windowHeight}/>
+               bind:outerHeight={windowHeight}
+               use:scrollAction={showList}/>
