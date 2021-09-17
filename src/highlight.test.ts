@@ -1,6 +1,8 @@
 import { render } from '@testing-library/svelte'
 import SimpleAutocomplete from "./SimpleAutocomplete.svelte"
 
+global.ResizeObserver = require('resize-observer-polyfill')
+
 test('test simple hightlights', async () => {
     const { component } = render(SimpleAutocomplete)
     var item = {
