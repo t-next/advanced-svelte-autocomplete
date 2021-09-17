@@ -1,6 +1,6 @@
 {
   "name": "advanced-svelte-autocomplete",
-  "version": "2.2.3-t-next.0.8",
+  "version": "2.2.3-t-next.1.0",
   "description": "Autocomplete / Select / Typeahead component made with Svelte 3",
   "svelte": "src/SimpleAutocomplete.svelte",
   "module": "index.mjs",
@@ -35,7 +35,7 @@
     "autobuild": "rollup -c rollup.dev.config.js -w",
     "dev": "run-p start:dev autobuild",
     "start": "sirv public --single",
-    "start:dev": "sirv public --single --dev",
+    "start:dev": "sirv public --single --dev --host",
     "test": "jest"
   },
   "repository": {

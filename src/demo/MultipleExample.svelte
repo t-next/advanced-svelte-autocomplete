@@ -9,7 +9,10 @@ const colorList = [
     { id: 3, name: "Yellow", code: "#FF00FF" },
     { id: 4, name: "Green", code: "#00FF00" },
     { id: 5, name: "Blue", code: "#0000FF" },
-    { id: 6, name: "Black", code: "#000000" }
+    { id: 7, name: "Black", code: "#000000" },
+    { id: 8, name: "Black sdf sdf df", code: "#000000" },
+    { id: 9, name: "Black sdf sdf sdfdsf", code: "#000000" },
+    { id: 10, name: "Blacksdf sdf sdfsd f", code: "#000000" }
 ];
 
 let selectedColorsItems;

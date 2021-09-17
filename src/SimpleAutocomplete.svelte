@@ -972,46 +972,66 @@
   }
 
   const scrollAction = (node, isShowList) => {
-    function iOS() {
-      return [
-            'iPad Simulator',
-            'iPhone Simulator',
-            'iPod Simulator',
-            'iPad',
-            'iPhone',
-            'iPod'
-          ].includes(navigator.platform)
-          // iPad on iOS 13 detection
-          || (navigator.userAgent.includes("Mac") && "ontouchend" in document)
+    const isiOS = [
+          'iPad Simulator',
+          'iPhone Simulator',
+          'iPod Simulator',
+          'iPad',
+          'iPhone',
+          'iPod'
+        ].includes(navigator.platform)
+        // iPad on iOS 13 detection
+        || (navigator.userAgent.includes("Mac") && "ontouchend" in document);
+
+    const onResize = (event) => {
+      console.log("resize", event)
+
+      if (!event) {
+        return;
+      }
+
+      const rect = container ? container.getBoundingClientRect() : {};
+      bounds = {top: rect.top + window.visualViewport.offsetTop, left: rect.left, height: rect.height, width: rect.width};
     }
 
-    let isiOS = iOS();
+    const resizeObserver = new ResizeObserver(onResize);
 
-    const onScroll = (e) => {
-      const rect = container.getBoundingClientRect();
-      const viewport = isiOS ? window.visualViewport : {offsetTop: 0};
-      bounds = { top: rect.top + viewport.offsetTop, left: rect.left, height: rect.height, width: rect.width };
-      console.log(bounds)
+    const onScroll = (event) => {
+      if (!event) {
+        return;
+      }
+
+      const rect = container ? container.getBoundingClientRect() : {};
+      const viewport = isiOS ? event.target : {offsetTop: 0, offsetLeft: 0};
+      bounds = {top: rect.top + viewport.offsetTop, left: rect.left + viewport.offsetLeft, height: rect.height, width: rect.width};
     }
 
     const addScrollListener = () => {
-      onScroll();
+      resizeObserver.observe(container);
+
+      onScroll({target: window.visualViewport});
       if (isiOS) {
-        window.visualViewport.addEventListener("touchmove", onScroll, true);
-        window.visualViewport.addEventListener("scroll", onScroll, true)
+        if(debug) console.log("START DRAG!", uniqueId);
+
+        window.visualViewport.addEventListener("touchmove", onScroll, {passive: true, capture: true});
+        window.visualViewport.addEventListener("scroll", onScroll, {passive: true})
+       // window.addEventListener("scroll", onScroll, {passive: true, capture: true});
       } else {
-        window.addEventListener("scroll", onScroll, true);
-        window.addEventListener("resize", onScroll, true);
+        window.addEventListener("scroll", onScroll, {passive: true, capture: true});
+        window.addEventListener("resize", onScroll, {passive: true, capture: true});
       }
     };
     const removeScrollListener = () => {
-      onScroll();
-      if (iOS()) {
-        window.visualViewport.removeEventListener("touchmove", onScroll, true);
-        window.visualViewport.removeEventListener("resize", onScroll, true)
+      resizeObserver.unobserve(container);
+
+      if (isiOS) {
+        if(debug) console.log("END DRAG!", uniqueId);
+
+        window.visualViewport.removeEventListener("touchmove", onScroll, {passive: true, capture: true});
+        window.visualViewport.removeEventListener("resize", onScroll, {passive: true, capture: true})
       } else {
-        window.removeEventListener("scroll", onScroll, true);
-        window.removeEventListener("resize", onScroll, true);
+        window.removeEventListener("scroll", onScroll, {passive: true, capture: true});
+        window.removeEventListener("resize", onScroll, {passive: true, capture: true});
       }
     };
 
@@ -1213,7 +1233,7 @@
       {/each}
     {/if}
   </select>
-  <div class="input-container">
+  <div class="input-container {showList || input && input.activeElement ? 'focus' : ''}">
     {#if multiple && selectedItem}
       {#each selectedItem as tagItem}
         <slot
