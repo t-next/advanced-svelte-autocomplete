@@ -48,6 +48,7 @@
     return true;
   };
   export let onChange = function(newSelectedItem) {};
+  export let onUnselected = function(unselectedItem) {};
   export let onFocus = function() {};
   export let onBlur = function() {};
   export let onCreate = function(text) {
@@ -61,6 +62,7 @@
   export let minCharactersToSearch = 1;
   export let maxItemsToShowInList = 0;
   export let multiple = false;
+  export let closeOnAction = {enter: true, select: false};
   export let create = false;
 
   // ignores the accents when matching items
@@ -158,10 +160,6 @@
   let highlightIndex = -1;
   export let text;
   let filteredTextLength = 0;
-  let yScrollPosition = 0;
-  let xScrollPosition = 0;
-  let windowWidth = 0;
-  let windowHeight = 0;
 
   // view model
   let filteredListItems;
@@ -173,7 +171,6 @@
 
   // other state
   let inputDelayTimeout;
-
 
   let bounds = {};
 
@@ -305,6 +302,9 @@
   }
 
   $: items, prepareListItems();
+  $: if (items) {
+      resetListToAllItems();
+  }
 
   function prepareUserEnteredText(userEnteredText) {
     if (userEnteredText === undefined || userEnteredText === null) {
@@ -565,8 +565,12 @@
     const listItem = filteredListItems[highlightIndex];
     if (selectListItem(listItem)) {
       close();
-      if (multiple) {
-        input.focus();
+      if (multiple && !closeOnAction.enter) {
+        if (input !== document.activeElement) {
+          input.focus();
+        } else {
+          onFocusInternal();
+        }
       }
     }
   }
@@ -634,7 +638,7 @@
 
     if (selectListItem(listItem)) {
       close();
-      if (multiple) {
+      if (multiple && !closeOnAction.select) {
         input.focus();
       }
     }
@@ -678,6 +682,7 @@
     };
     const fn = fnmap[key];
     if (typeof fn === "function") {
+      e.stopPropagation();
       e.preventDefault();
       fn(e);
     }
@@ -719,7 +724,11 @@
     if (debug) {
       console.log("unselectItem", tag);
     }
+
     selectedItem = selectedItem.filter(i => i !== tag);
+
+    onUnselected(tag);
+
     input.focus();
   }
 
@@ -774,6 +783,14 @@
     }
 
     onBlur();
+  }
+
+  function resetListToAllItems() {
+    if (debug) {
+      console.log("resetListToAllItems");
+    }
+
+    filteredListItems = listItems;
   }
 
   function resetListToAllItemsAndOpen() {
@@ -1312,7 +1329,7 @@
       <div class="autocomplete-list-item-loading">
         <slot name="loading" {loadingText}>{loadingText}</slot>
       </div>
-    {:else if create}
+    {:else if create && text}
       <div class="autocomplete-list-item-create" on:click={selectItem}>
         <slot name="create" {createText}>{createText}</slot>
       </div>
@@ -1326,6 +1343,4 @@
 
 <svelte:window on:click={onDocumentClick}
                on:touchstart={onDocumentClick}
-               bind:outerWidth={windowWidth}
-               bind:outerHeight={windowHeight}
                use:scrollAction={showList}/>
