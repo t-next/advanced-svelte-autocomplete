@@ -156,6 +156,8 @@
 
   // UI state
   let opened = false;
+  let showList = false;
+  let clearable = false;
   let loading = false;
   let highlightIndex = -1;
   export let text;
@@ -1257,7 +1259,9 @@
           name="tag"
           label={safeLabelFunction(tagItem)}
           item={tagItem}
-          {unselectItem}>
+          {unselectItem}
+          {close}
+        >
           <div class="tags has-addons">
             <span class="tag">{safeLabelFunction(tagItem)}</span>
             <span
@@ -1333,7 +1337,7 @@
       <div class="autocomplete-list-item-create" on:click={selectItem}>
         <slot name="create" {createText}>{createText}</slot>
       </div>
-    {:else if noResultsText}
+    {:else if noResultsText && text}
       <div class="autocomplete-list-item-no-results">
         <slot name="no-results" {noResultsText}>{noResultsText}</slot>
       </div>
