@@ -10,48 +10,48 @@
   export let keywordsFieldName = labelFieldName;
   export let valueFieldName = undefined;
 
-  export let labelFunction = function(item) {
+  export let labelFunction = function (item) {
     if (item === undefined || item === null) {
       return "";
     }
     return labelFieldName ? item[labelFieldName] : item;
   };
 
-  export let keywordsFunction = function(item) {
+  export let keywordsFunction = function (item) {
     if (item === undefined || item === null) {
       return "";
     }
     return keywordsFieldName ? item[keywordsFieldName] : labelFunction(item);
   };
 
-  export let valueFunction = function(item, forceSingle = false) {
+  export let valueFunction = function (item, forceSingle = false) {
     if (item === undefined || item === null) {
       return item;
     }
     if (!multiple || forceSingle) {
       return valueFieldName ? item[valueFieldName] : item;
     } else {
-      return item.map(i => (valueFieldName ? i[valueFieldName] : i));
+      return item.map((i) => (valueFieldName ? i[valueFieldName] : i));
     }
   };
 
-  export let keywordsCleanFunction = function(keywords) {
+  export let keywordsCleanFunction = function (keywords) {
     return keywords;
   };
 
-  export let textCleanFunction = function(userEnteredText) {
+  export let textCleanFunction = function (userEnteredText) {
     return userEnteredText;
   };
 
   // events
-  export let beforeChange = function(oldSelectedItem, newSelectedItem) {
+  export let beforeChange = function (oldSelectedItem, newSelectedItem) {
     return true;
   };
-  export let onChange = function(newSelectedItem) {};
-  export let onUnselected = function(unselectedItem) {};
-  export let onFocus = function() {};
-  export let onBlur = function() {};
-  export let onCreate = function(text) {
+  export let onChange = function (newSelectedItem) {};
+  export let onUnselected = function (unselectedItem) {};
+  export let onFocus = function () {};
+  export let onBlur = function () {};
+  export let onCreate = function (text) {
     if (debug) {
       console.log("onCreate: " + text);
     }
@@ -62,7 +62,7 @@
   export let minCharactersToSearch = 1;
   export let maxItemsToShowInList = 0;
   export let multiple = false;
-  export let closeOnAction = {enter: true, select: false};
+  export let closeOnAction = { enter: true, select: false };
   export let create = false;
 
   // ignores the accents when matching items
@@ -299,13 +299,13 @@
       // item label
       label: safeLabelFunction(item),
       // store reference to the origial item
-      item: item
+      item: item,
     };
   }
 
   $: items, prepareListItems();
   $: if (items) {
-      resetListToAllItems();
+    resetListToAllItems();
   }
 
   function prepareUserEnteredText(userEnteredText) {
@@ -348,7 +348,7 @@
     const itemKeywords = listItem.keywords;
 
     let matches = 0;
-    searchWords.forEach(searchWord => {
+    searchWords.forEach((searchWord) => {
       if (itemKeywords.includes(searchWord)) {
         matches++;
       }
@@ -478,11 +478,11 @@
     let tempfilteredListItems;
     if (localFiltering) {
       if (itemFilterFunction) {
-        tempfilteredListItems = listItems.filter(item =>
+        tempfilteredListItems = listItems.filter((item) =>
           itemFilterFunction(item.item, searchWords)
         );
       } else {
-        tempfilteredListItems = listItems.filter(item =>
+        tempfilteredListItems = listItems.filter((item) =>
           defaultItemFilterFunction(item, searchWords)
         );
       }
@@ -550,7 +550,7 @@
       }
       // selecting something already selected => unselect it
       else if (selectedItem.includes(newSelectedItem)) {
-        selectedItem = selectedItem.filter(i => i !== newSelectedItem);
+        selectedItem = selectedItem.filter((i) => i !== newSelectedItem);
       }
       // adds the element to the selection
       else {
@@ -680,7 +680,7 @@
       Backspace:
         multiple && selectedItem && selectedItem.length && !text
           ? onBackspace.bind(this)
-          : null
+          : null,
     };
     const fn = fnmap[key];
     if (typeof fn === "function") {
@@ -727,7 +727,7 @@
       console.log("unselectItem", tag);
     }
 
-    selectedItem = selectedItem.filter(i => i !== tag);
+    selectedItem = selectedItem.filter((i) => i !== tag);
 
     onUnselected(tag);
 
@@ -913,7 +913,7 @@
   }
 
   export function highlightFilter(keywords, field) {
-    return item => {
+    return (item) => {
       let label = item[field];
 
       const newItem = Object.assign({ highlighted: undefined }, item);
@@ -991,27 +991,33 @@
   }
 
   const scrollAction = (node, isShowList) => {
-    const isiOS = [
-          'iPad Simulator',
-          'iPhone Simulator',
-          'iPod Simulator',
-          'iPad',
-          'iPhone',
-          'iPod'
-        ].includes(navigator.platform)
-        // iPad on iOS 13 detection
-        || (navigator.userAgent.includes("Mac") && "ontouchend" in document);
+    const isiOS =
+      [
+        "iPad Simulator",
+        "iPhone Simulator",
+        "iPod Simulator",
+        "iPad",
+        "iPhone",
+        "iPod",
+      ].includes(navigator.platform) ||
+      // iPad on iOS 13 detection
+      (navigator.userAgent.includes("Mac") && "ontouchend" in document);
 
     const onResize = (event) => {
-      console.log("resize", event)
+      console.log("resize", event);
 
       if (!event) {
         return;
       }
 
       const rect = container ? container.getBoundingClientRect() : {};
-      bounds = {top: rect.top + window.visualViewport.offsetTop, left: rect.left, height: rect.height, width: rect.width};
-    }
+      bounds = {
+        top: rect.top + window.visualViewport.offsetTop,
+        left: rect.left,
+        height: rect.height,
+        width: rect.width,
+      };
+    };
 
     const resizeObserver = new ResizeObserver(onResize);
 
@@ -1021,36 +1027,64 @@
       }
 
       const rect = container ? container.getBoundingClientRect() : {};
-      const viewport = isiOS ? event.target : {offsetTop: 0, offsetLeft: 0};
-      bounds = {top: rect.top + viewport.offsetTop, left: rect.left + viewport.offsetLeft, height: rect.height, width: rect.width};
-    }
+      const viewport = isiOS ? event.target : { offsetTop: 0, offsetLeft: 0 };
+      bounds = {
+        top: rect.top + viewport.offsetTop,
+        left: rect.left + viewport.offsetLeft,
+        height: rect.height,
+        width: rect.width,
+      };
+    };
 
     const addScrollListener = () => {
-      resizeObserver.observe(container);
+      resizeObserver && container && resizeObserver.observe(container);
 
-      onScroll({target: window.visualViewport});
+      onScroll({ target: window.visualViewport });
       if (isiOS) {
-        if(debug) console.log("START DRAG!", uniqueId);
+        if (debug) console.log("START DRAG!", uniqueId);
 
-        window.visualViewport.addEventListener("touchmove", onScroll, {passive: true, capture: true});
-        window.visualViewport.addEventListener("scroll", onScroll, {passive: true})
-       // window.addEventListener("scroll", onScroll, {passive: true, capture: true});
+        window.visualViewport.addEventListener("touchmove", onScroll, {
+          passive: true,
+          capture: true,
+        });
+        window.visualViewport.addEventListener("scroll", onScroll, {
+          passive: true,
+        });
+        // window.addEventListener("scroll", onScroll, {passive: true, capture: true});
       } else {
-        window.addEventListener("scroll", onScroll, {passive: true, capture: true});
-        window.addEventListener("resize", onScroll, {passive: true, capture: true});
+        window.addEventListener("scroll", onScroll, {
+          passive: true,
+          capture: true,
+        });
+        window.addEventListener("resize", onScroll, {
+          passive: true,
+          capture: true,
+        });
       }
     };
     const removeScrollListener = () => {
-      resizeObserver.unobserve(container);
+      resizeObserver && container && resizeObserver.unobserve(container);
 
       if (isiOS) {
-        if(debug) console.log("END DRAG!", uniqueId);
+        if (debug) console.log("END DRAG!", uniqueId);
 
-        window.visualViewport.removeEventListener("touchmove", onScroll, {passive: true, capture: true});
-        window.visualViewport.removeEventListener("resize", onScroll, {passive: true, capture: true})
+        window.visualViewport.removeEventListener("touchmove", onScroll, {
+          passive: true,
+          capture: true,
+        });
+        window.visualViewport.removeEventListener("resize", onScroll, {
+          passive: true,
+          capture: true,
+        });
       } else {
-        window.removeEventListener("scroll", onScroll, {passive: true, capture: true});
-        window.removeEventListener("resize", onScroll, {passive: true, capture: true});
+        window.removeEventListener("scroll", onScroll, {
+          passive: true,
+          capture: true,
+        });
+        window.removeEventListener("resize", onScroll, {
+          passive: true,
+          capture: true,
+        });
       }
     };
 
@@ -1064,10 +1098,144 @@
       },
       destroy() {
         removeScrollListener();
-      }
+      },
     };
-  }
+  };
 </script>
+
+<div
+  bind:this={container}
+  class="{className ? className : ''}
+  {hideArrow || !items.length ? 'hide-arrow' : ''}
+  {multiple ? 'is-multiple' : ''} autocomplete select is-fullwidth {uniqueId}"
+  class:show-clear={clearable}
+  class:is-loading={showLoadingIndicator && loading}
+>
+  <select name={selectName} id={selectId} {multiple}>
+    {#if !multiple && value}
+      <option {value} selected>{text}</option>
+    {:else if multiple && selectedItem}
+      {#each selectedItem as i}
+        <option value={valueFunction(i, true)} selected>
+          {safeLabelFunction(i)}
+        </option>
+      {/each}
+    {/if}
+  </select>
+  <div
+    class="input-container {showList || (input && input.activeElement)
+      ? 'focus'
+      : ''}"
+  >
+    {#if multiple && selectedItem}
+      {#each selectedItem as tagItem}
+        <slot
+          name="tag"
+          label={safeLabelFunction(tagItem)}
+          item={tagItem}
+          {unselectItem}
+          {close}
+        >
+          <div class="tags has-addons">
+            <span class="tag">{safeLabelFunction(tagItem)}</span>
+            <span
+              class="tag is-delete"
+              on:click|preventDefault={unselectItem(tagItem)}
+            />
+          </div>
+        </slot>
+      {/each}
+    {/if}
+    <input
+      type="text"
+      class="{inputClassName ? inputClassName : ''} input autocomplete-input"
+      id={inputId ? inputId : ""}
+      autocomplete={html5autocomplete ? "on" : "off"}
+      {placeholder}
+      {name}
+      {disabled}
+      {title}
+      readonly={readonly || (lock && selectedItem)}
+      bind:this={input}
+      bind:value={text}
+      on:input={onInput}
+      on:focus={onFocusInternal}
+      on:blur={onBlurInternal}
+      on:keydown={onKeyDown}
+      on:click={onInputClick}
+      on:keypress={onKeyPress}
+    />
+    {#if clearable}
+      <span on:click={clear} class="autocomplete-clear-button">&#10006;</span>
+    {/if}
+  </div>
+  <div
+    class="{dropdownClassName
+      ? dropdownClassName
+      : ''} autocomplete-list {showList ? '' : 'hidden'}
+    is-fullwidth"
+    style="left: {bounds.left}px; top: {bounds.top +
+      bounds.height}px ; width: {bounds.width}px"
+    bind:this={list}
+  >
+    {#if filteredListItems && filteredListItems.length > 0}
+      {#each filteredListItems as listItem, i}
+        {#if listItem && (maxItemsToShowInList <= 0 || i < maxItemsToShowInList)}
+          {#if listItem}
+            <div
+              class="autocomplete-list-item {i === highlightIndex
+                ? 'selected'
+                : ''}"
+              class:confirmed={isConfirmed(listItem.item)}
+              on:click={() => onListItemClick(listItem)}
+              on:pointerenter={() => {
+                highlightIndex = i;
+              }}
+            >
+              <slot
+                name="item"
+                item={listItem.item}
+                label={listItem.highlighted
+                  ? listItem.highlighted
+                  : listItem.label}
+              >
+                {#if listItem.highlighted}
+                  {@html listItem.highlighted}
+                {:else}
+                  {@html listItem.label}
+                {/if}
+              </slot>
+            </div>
+          {/if}
+        {/if}
+      {/each}
+
+      {#if maxItemsToShowInList > 0 && filteredListItems.length > maxItemsToShowInList}
+        <div class="autocomplete-list-item-no-results">
+          ...{filteredListItems.length - maxItemsToShowInList} results not shown
+        </div>
+      {/if}
+    {:else if loading && loadingText}
+      <div class="autocomplete-list-item-loading">
+        <slot name="loading" {loadingText}>{loadingText}</slot>
+      </div>
+    {:else if create && text}
+      <div class="autocomplete-list-item-create" on:click={selectItem}>
+        <slot name="create" {createText}>{createText}</slot>
+      </div>
+    {:else if noResultsText && text}
+      <div class="autocomplete-list-item-no-results">
+        <slot name="no-results" {noResultsText}>{noResultsText}</slot>
+      </div>
+    {/if}
+  </div>
+</div>
+
+<svelte:window
+  on:click={onDocumentClick}
+  on:touchstart={onDocumentClick}
+  use:scrollAction={showList}
+/>
 
 <style>
   .autocomplete {
@@ -1233,118 +1401,3 @@
     background: none;
   }
 </style>
-
-<div
-  bind:this={container}
-  class="{className ? className : ''}
-  {hideArrow || !items.length ? 'hide-arrow' : ''}
-  {multiple ? 'is-multiple' : ''} autocomplete select is-fullwidth {uniqueId}"
-  class:show-clear={clearable}
-  class:is-loading={showLoadingIndicator && loading}>
-  <select name={selectName} id={selectId} {multiple}>
-    {#if !multiple && value}
-      <option {value} selected>{text}</option>
-    {:else if multiple && selectedItem}
-      {#each selectedItem as i}
-        <option value={valueFunction(i, true)} selected>
-          {safeLabelFunction(i)}
-        </option>
-      {/each}
-    {/if}
-  </select>
-  <div class="input-container {showList || input && input.activeElement ? 'focus' : ''}">
-    {#if multiple && selectedItem}
-      {#each selectedItem as tagItem}
-        <slot
-          name="tag"
-          label={safeLabelFunction(tagItem)}
-          item={tagItem}
-          {unselectItem}
-          {close}
-        >
-          <div class="tags has-addons">
-            <span class="tag">{safeLabelFunction(tagItem)}</span>
-            <span
-              class="tag is-delete"
-              on:click|preventDefault={unselectItem(tagItem)} />
-          </div>
-        </slot>
-      {/each}
-    {/if}
-    <input
-      type="text"
-      class="{inputClassName ? inputClassName : ''} input autocomplete-input"
-      id={inputId ? inputId : ''}
-      autocomplete={html5autocomplete ? 'on' : 'off'}
-      {placeholder}
-      {name}
-      {disabled}
-      {title}
-      readonly={readonly || (lock && selectedItem)}
-      bind:this={input}
-      bind:value={text}
-      on:input={onInput}
-      on:focus={onFocusInternal}
-      on:blur={onBlurInternal}
-      on:keydown={onKeyDown}
-      on:click={onInputClick}
-      on:keypress={onKeyPress} />
-    {#if clearable}
-      <span on:click={clear} class="autocomplete-clear-button">&#10006;</span>
-    {/if}
-  </div>
-  <div
-    class="{dropdownClassName ? dropdownClassName : ''} autocomplete-list {showList ? '' : 'hidden'}
-    is-fullwidth"
-    style="left: {bounds.left}px; top: {bounds.top + bounds.height}px ; width: {bounds.width}px"
-    bind:this={list}>
-    {#if filteredListItems && filteredListItems.length > 0}
-      {#each filteredListItems as listItem, i}
-        {#if listItem && (maxItemsToShowInList <= 0 || i < maxItemsToShowInList)}
-          {#if listItem}
-            <div
-              class="autocomplete-list-item {i === highlightIndex ? 'selected' : ''}"
-              class:confirmed={isConfirmed(listItem.item)}
-              on:click={() => onListItemClick(listItem)}
-              on:pointerenter={() => {
-                highlightIndex = i;
-              }}>
-              <slot
-                name="item"
-                item={listItem.item}
-                label={listItem.highlighted ? listItem.highlighted : listItem.label}>
-                {#if listItem.highlighted}
-                  {@html listItem.highlighted}
-                {:else}
-                  {@html listItem.label}
-                {/if}
-              </slot>
-            </div>
-          {/if}
-        {/if}
-      {/each}
-
-      {#if maxItemsToShowInList > 0 && filteredListItems.length > maxItemsToShowInList}
-        <div class="autocomplete-list-item-no-results">
-          ...{filteredListItems.length - maxItemsToShowInList} results not shown
-        </div>
-      {/if}
-    {:else if loading && loadingText}
-      <div class="autocomplete-list-item-loading">
-        <slot name="loading" {loadingText}>{loadingText}</slot>
-      </div>
-    {:else if create && text}
-      <div class="autocomplete-list-item-create" on:click={selectItem}>
-        <slot name="create" {createText}>{createText}</slot>
-      </div>
-    {:else if noResultsText && text}
-      <div class="autocomplete-list-item-no-results">
-        <slot name="no-results" {noResultsText}>{noResultsText}</slot>
-      </div>
-    {/if}
-  </div>
-</div>
-
-<svelte:window on:click={onDocumentClick}
-               on:touchstart={onDocumentClick}
-               use:scrollAction={showList}/>
