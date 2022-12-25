@@ -1264,7 +1264,7 @@
         >
           <div class="tags has-addons">
             <span class="tag">{safeLabelFunction(tagItem)}</span>
-            <span
+            <button
               class="tag is-delete"
               on:click|preventDefault={unselectItem(tagItem)} />
           </div>
@@ -1290,7 +1290,7 @@
       on:click={onInputClick}
       on:keypress={onKeyPress} />
     {#if clearable}
-      <span on:click={clear} class="autocomplete-clear-button">&#10006;</span>
+      <button on:click={clear} class="autocomplete-clear-button">&#10006;</button>
     {/if}
   </div>
   <div
@@ -1305,6 +1305,7 @@
             <div
               class="autocomplete-list-item {i === highlightIndex ? 'selected' : ''}"
               class:confirmed={isConfirmed(listItem.item)}
+              on:keydown={() => {}}
               on:click={() => onListItemClick(listItem)}
               on:pointerenter={() => {
                 highlightIndex = i;
@@ -1334,9 +1335,9 @@
         <slot name="loading" {loadingText}>{loadingText}</slot>
       </div>
     {:else if create && text}
-      <div class="autocomplete-list-item-create" on:click={selectItem}>
+      <button class="autocomplete-list-item-create" on:click={selectItem}>
         <slot name="create" {createText}>{createText}</slot>
-      </div>
+      </button>
     {:else if noResultsText && text}
       <div class="autocomplete-list-item-no-results">
         <slot name="no-results" {noResultsText}>{noResultsText}</slot>
