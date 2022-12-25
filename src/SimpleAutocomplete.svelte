@@ -1345,7 +1345,6 @@
     {/if}
   </div>
 </div>
-
 <svelte:window on:click={onDocumentClick}
                on:touchstart={onDocumentClick}
                use:scrollAction={showList}/>
